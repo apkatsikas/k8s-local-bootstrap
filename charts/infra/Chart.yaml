@@ -1,0 +1,4 @@
+apiVersion: v2
+name: infra
+description: Platform-level gateway infrastructure
+version: 0.1.0

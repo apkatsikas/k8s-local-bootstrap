@@ -1,0 +1,16 @@
+# Allows cross-namespace secret references. 
+# Without this, they are rejected by the Gateway API controller.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-api-gateway-tls
+  namespace: {{ .Values.namespace }}
+spec:
+  from:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    namespace: default
+  to:
+  - group: ""
+    kind: Secret
+    name: api-tls

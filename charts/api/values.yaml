@@ -1,0 +1,13 @@
+image:
+  repository: api
+  tag: dev
+  # Never is correct for kind. Kind doesn't
+  # use a registry — it loads images directly into the
+  # cluster nodes with kind load, so Kubernetes should never
+  # try to pull from a registry. Always would fail, and
+  # IfNotPresent would work but risks silently using a stale
+  # cached image.
+  pullPolicy: Never
+
+hostname: api.localhost
+namespace: api

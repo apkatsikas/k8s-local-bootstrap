@@ -1,0 +1,46 @@
+# EnvoyProxy customizes the Envoy proxy Deployment that Envoy Gateway generates.
+#
+# Envoy binds its listeners internally on 10080 (HTTP) and 10443 (HTTPS) rather
+# than 80/443. This is because Linux requires root to bind ports below 1024 and
+# Envoy runs unprivileged. In a normal cloud setup this is invisible — Envoy
+# Gateway creates a LoadBalancer Service with targetPort 10080/10443 and the
+# cloud controller handles the rest. Locally there is no cloud, so we use
+# hostPort to wire the KIND node ports directly to the Envoy container ports.
+#
+# The 10080/10443 ports are only documented incidentally in the Envoy Gateway
+# patch policy docs (as old xDS listener naming: "http-10080", "https-10443"):
+#   https://gateway.envoyproxy.io/docs/tasks/extensibility/envoy-patch-policy/
+# The admin API (port 19000, /listeners endpoint) is the definitive way to
+# confirm what ports Envoy is actually bound to at runtime:
+#   kubectl port-forward -n envoy-gateway-system <envoy-pod> 19000:19000
+#   curl localhost:19000/listeners
+#
+# Local dev only — remove this file when moving to a cloud cluster and Envoy
+# Gateway will create a LoadBalancer Service with the correct targetPorts automatically.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: kind-proxy
+  namespace: envoy-gateway-system
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              template:
+                spec:
+                  containers:
+                    - name: envoy
+                      ports:
+                        - containerPort: 10080
+                          hostPort: 80
+                          protocol: TCP
+                        - containerPort: 10443
+                          hostPort: 443
+                          protocol: TCP
+      envoyService:
+        type: ClusterIP
