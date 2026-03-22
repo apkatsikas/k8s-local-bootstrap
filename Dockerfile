@@ -7,7 +7,9 @@ RUN npm install --production
 
 COPY ./src .
 
-# this is just documentation apparently
+RUN chown -R node:node /app
+USER node
+
 EXPOSE 3000
 
 CMD ["node", "server.js"]
