@@ -93,9 +93,9 @@ into the KIND node container:
 
 ```yaml
 extraPortMappings:
-  - containerPort: 80
+  - containerPort: 10080
     hostPort: 80
-  - containerPort: 443
+  - containerPort: 10443
     hostPort: 443
 ```
 
