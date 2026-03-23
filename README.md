@@ -93,9 +93,9 @@ into the KIND node container:
 
 ```yaml
 extraPortMappings:
-  - containerPort: 10080
+  - containerPort: 80
     hostPort: 80
-  - containerPort: 10443
+  - containerPort: 443
     hostPort: 443
 ```
 
@@ -114,9 +114,9 @@ defines an `EnvoyProxy` resource that bridges this with `hostPort`:
 containers:
   - name: envoy
     ports:
-      - containerPort: 80
+      - containerPort: 10080
         hostPort: 80
-      - containerPort: 443
+      - containerPort: 10443
         hostPort: 443
 ```
 
